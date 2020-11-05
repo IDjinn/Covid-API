@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <NullableContextOptions>enable</NullableContextOptions>
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <LangVersion>9.0</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="TinyCsvParser" Version="2.6.0" />
+  </ItemGroup>
+
+
+</Project>
