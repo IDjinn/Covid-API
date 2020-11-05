@@ -8,6 +8,7 @@ namespace CovidAPI.Models
 {
     public class CovidData
     {
+        public static readonly string DATASET_URL = "https://raw.githubusercontent.com/datasets/covid-19/master/data/time-series-19-covid-combined.csv";
         public DateTime Date { get; set; }
         public string Country { get; set; }
         public string? State { get; set; }

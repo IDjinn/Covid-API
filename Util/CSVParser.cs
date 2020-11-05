@@ -16,9 +16,10 @@ namespace CovidAPI.Util
     {
         public static IEnumerable<T> GetRecords<T>(string fileName, ICsvMapping<T> Mapping)
         {
+            string currentFolder = AppDomain.CurrentDomain.BaseDirectory;
             CsvParserOptions csvParserOptions = new CsvParserOptions(true, ',');
             var csvParser = new CsvParser<T>(csvParserOptions, Mapping);
-            var records = csvParser.ReadFromFile(fileName, Encoding.UTF8);
+            var records = csvParser.ReadFromFile(Path.Combine(currentFolder, fileName), Encoding.UTF8);
             return records.Select(x => x.Result).ToList();
         }
     }

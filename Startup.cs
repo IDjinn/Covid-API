@@ -1,7 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
+using CovidAPI.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -10,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Octokit;
 
 namespace CovidAPI
 {
@@ -18,6 +24,8 @@ namespace CovidAPI
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Thread updateThread = new Thread(AsyncCheckDatasetUpdate);
+            updateThread.Start();
         }
 
         public IConfiguration Configuration { get; }
@@ -44,6 +52,25 @@ namespace CovidAPI
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private async void AsyncCheckDatasetUpdate(object obj)
+        {
+            var github = new GitHubClient(new ProductHeaderValue("Covid-API"));
+            var repository = await github.Repository.Get("datasets", "covid-19");
+
+            if(repository.UpdatedAt.UtcDateTime.Hour > DateTime.UtcNow.Hour)
+                Console.WriteLine($"Atualizando dataset, ultimo update: {repository.UpdatedAt.UtcDateTime.ToLongDateString()}");
+
+            {
+                Console.WriteLine($"Atualizando dataset, ultimo update: {repository.UpdatedAt.UtcDateTime.ToLongDateString()}");
+
+                WebClient client = new WebClient();
+                client.DownloadFile(new Uri(CovidData.DATASET_URL), Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "time-series-19-covid-combined.csv"));
+                Console.WriteLine("pronto");
+            }
+
+            Thread.Sleep(30 * 60 * 1000);
         }
     }
 }
