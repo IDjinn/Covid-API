@@ -59,15 +59,14 @@ namespace CovidAPI
             var github = new GitHubClient(new ProductHeaderValue("Covid-API"));
             var repository = await github.Repository.Get("datasets", "covid-19");
 
-            if(repository.UpdatedAt.UtcDateTime.Hour > DateTime.UtcNow.Hour)
-                Console.WriteLine($"Atualizando dataset, ultimo update: {repository.UpdatedAt.UtcDateTime.ToLongDateString()}");
-
+            if (repository.UpdatedAt.UtcDateTime.Hour > DateTime.UtcNow.Hour)
             {
                 Console.WriteLine($"Atualizando dataset, ultimo update: {repository.UpdatedAt.UtcDateTime.ToLongDateString()}");
 
                 WebClient client = new WebClient();
                 client.DownloadFile(new Uri(CovidData.DATASET_URL), Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "time-series-19-covid-combined.csv"));
-                Console.WriteLine("pronto");
+
+                Console.WriteLine("Dataset atualizado!");
             }
 
             Thread.Sleep(30 * 60 * 1000);
